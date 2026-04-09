@@ -96,6 +96,8 @@ npm run build
 
 ## Project Structure
 
+```bash
+
 src/
 ├── api/
 │   ├── axios.ts            # Axios instance with auth interceptors
@@ -125,6 +127,7 @@ src/
 └── types/
 └── index.ts            # Shared TypeScript interfaces
 
+```
 ---
 
 ## Features
