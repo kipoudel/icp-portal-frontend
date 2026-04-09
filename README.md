@@ -1,42 +1,90 @@
-# icp-portal-frontend
+# ICP Portal — Frontend (Vue.js SPA)
 
-This template should help get you started developing with Vue 3 in Vite.
+A fully decoupled Single Page Application built with Vue 3, TypeScript, and Tailwind CSS for managing inventory and orders. Communicates with the Laravel API via token-based authentication.
 
-## Recommended IDE Setup
+---
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Tech Stack
 
-## Recommended Browser Setup
+- **Framework**: Vue 3 (Composition API)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4
+- **State Management**: Pinia
+- **Data Fetching**: TanStack Query (Vue Query)
+- **HTTP Client**: Axios
+- **Routing**: Vue Router 4
+- **Build Tool**: Vite
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+---
 
-## Type Support for `.vue` Imports in TS
+## Architecture Decisions
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+- **Composition API (`<script setup>`)** — All components use the modern `<script setup>` syntax as required by the assessment
+- **TanStack Query** — Handles all server state: caching, loading states, background revalidation, and cache invalidation after mutations. Avoids manual loading/error state management
+- **Pinia** — Manages global client state for authentication (token + user) and cart persistence across navigation
+- **Axios interceptors** — Automatically attaches Bearer token to every request and redirects to login on 401 responses
+- **Strict decoupling** — No Laravel/Blade dependency. Communicates purely via REST API with Bearer token authentication
+- **Environment-based API URL** — `VITE_API_URL` controls the backend URL per environment, no hardcoded URLs
 
-## Customize configuration
+---
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+## Requirements
 
-## Project Setup
+- Node.js 20+
+- npm or pnpm
+- Laravel API running (see backend repo)
 
-```sh
-pnpm install
+---
+
+## Setup Instructions
+
+### 1. Clone the repository
+
+```bash
+git clone git@github.com:kipoudel/icp-portal-frontend.git
+cd icp-portal-frontend
 ```
 
-### Compile and Hot-Reload for Development
+### 2. Install dependencies
 
-```sh
-pnpm dev
+```bash
+npm install
 ```
 
-### Type-Check, Compile and Minify for Production
+### 3. Configure environment
 
-```sh
-pnpm build
+```bash
+cp .env.example .env
 ```
+
+Update `.env` with your Laravel API URL:
+
+```env
+VITE_API_URL=http://localhost:8000/api
+```
+
+### 4. Start the development server
+
+```bash
+npm run dev
+```
+
+App is available at `http://localhost:5173`
+
+### 5. Build for production
+
+```bash
+npm run build
+```
+
+---
+
+## Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `VITE_API_URL` | Laravel API base URL | `http://localhost:8000/api` |
+
+---
+
+## Project Structure
