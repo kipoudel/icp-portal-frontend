@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useCartStore } from '@/stores/cart'
@@ -8,6 +8,7 @@ const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
 const cartStore = useCartStore()
+const isMobileMenuOpen = ref(false)
 
 const navItems = [
   { name: 'Dashboard', path: '/', icon: '▦' },
@@ -21,12 +22,41 @@ async function handleLogout() {
   await authStore.logout()
   router.push('/login')
 }
+
+function closeMobileMenu() {
+  isMobileMenuOpen.value = false
+}
 </script>
 
 <template>
   <div class="min-h-screen bg-gray-950 flex">
+    
+    <!-- Mobile menu button -->
+    <button
+      @click="isMobileMenuOpen = !isMobileMenuOpen"
+      class="lg:hidden fixed top-4 left-4 z-50 p-3 bg-gray-800 hover:bg-gray-700 rounded-lg text-white shadow-lg transition-colors"
+      aria-label="Toggle menu"
+    >
+      <svg v-if="!isMobileMenuOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+      <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
 
-    <aside class="w-64 bg-gray-900 border-r border-gray-800 flex flex-col fixed h-full">
+    <!-- Overlay for mobile -->
+    <div
+      v-if="isMobileMenuOpen"
+      @click="closeMobileMenu"
+      class="lg:hidden fixed inset-0 bg-black/50 z-30"
+    ></div>
+
+    <!-- Sidebar -->
+    <aside
+      class="w-64 bg-gray-900 border-r border-gray-800 flex flex-col fixed h-full z-40 transition-transform duration-300"
+      :class="isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
+    >
       <div class="p-6 border-b border-gray-800">
         <div class="flex items-center gap-3">
           <div class="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center">
@@ -44,6 +74,7 @@ async function handleLogout() {
           v-for="item in navItems"
           :key="item.path"
           :to="item.path"
+          @click="closeMobileMenu"
           class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors duration-150"
           :class="isActive(item.path)
             ? 'bg-blue-600 text-white'
@@ -82,9 +113,9 @@ async function handleLogout() {
       </div>
     </aside>
 
-    <main class="flex-1 ml-64 p-8">
+    <!-- Main content -->
+    <main class="flex-1 lg:ml-64 pt-16 lg:pt-0">
       <slot />
     </main>
-
   </div>
 </template>
